@@ -11,7 +11,7 @@ encryption:
   key_dir: keys
 
 dataset:
-  file: environmentMonitoring.csv
+  file: patientMonitoring.csv
   label_col: label
   features:
     [
