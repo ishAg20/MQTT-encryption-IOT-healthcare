@@ -5,3 +5,19 @@ mqttenv/
 __pycache__/
 
 patientMonitoring.csv
+
+MQTT-DDoS-Publish_Flood_test.pcap.csv
+
+MQTT-DDoS-Publish_Flood_train.pcap.csv
+
+MQTT-DoS-Connect_Flood_test.pcap.csv
+
+MQTT-DoS-Connect_Flood_train.pcap.csv
+
+MQTT-DoS-Publish_Flood_test.pcap.csv
+
+MQTT-DoS-Publish_Flood_train.pcap.csv
+
+MQTT-Malformed_Data_test.pcap.csv
+
+MQTT-Malformed_Data_train.pcap.csv
