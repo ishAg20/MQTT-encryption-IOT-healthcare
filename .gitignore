@@ -1,0 +1,5 @@
+environmentMonitoring.csv
+
+mqttenv/
+
+__pycache__/

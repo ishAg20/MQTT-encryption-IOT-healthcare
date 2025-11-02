@@ -1,0 +1,40 @@
+mqtt:
+  broker: localhost
+  port: 1883
+  keepalive: 60
+  topic: icu/iot/telemetry
+  qos: 1
+
+encryption:
+  modes: [GCM]
+  key_sizes: [128, 256]
+  key_dir: keys
+
+dataset:
+  file: environmentMonitoring.csv
+  label_col: label
+  features:
+    [
+      frame.time_delta,
+      frame.len,
+      ip.proto,
+      ip.ttl,
+      tcp.srcport,
+      tcp.dstport,
+      tcp.len,
+      tcp.window_size_value,
+      mqtt.conflag.qos,
+      mqtt.conflag.retain,
+      mqtt.conflag.willflag,
+      mqtt.qos,
+      mqtt.retain,
+      mqtt.msgtype,
+      mqtt.kalive,
+      mqtt.len,
+    ]
+  sample_size: 1000
+
+testing:
+  message_count: 200
+  measure_overhead: true
+  publish_interval_seconds: 0.05
