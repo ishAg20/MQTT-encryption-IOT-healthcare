@@ -1,152 +1,100 @@
-🔐 Securing MQTT Communications in IoT using ECDH and AES-GCM
-📘 Overview
+# MQTT Encryption for IoT Healthcare (ECDH + AES-GCM)
 
-This project demonstrates secure IoT data transmission over MQTT by combining:
+## Overview
 
-Elliptic Curve Diffie-Hellman (ECDH) for key exchange
+This repo demonstrates **secure telemetry transmission** for IoT healthcare devices using:
 
-AES-128-GCM for encryption & authentication
+- **Elliptic Curve Diffie-Hellman (ECDH):** Secure session key exchange
+- **AES-128/256-GCM:** Authenticated encryption of patient data
+- **MQTT (Mosquitto):** Real-time publish/subscribe messaging
 
-The publisher and subscriber securely exchange public keys using ECDH, derive a shared AES key, and then use it to encrypt and decrypt real-time telemetry data.
+Publisher and Subscriber negotiate ECDH public keys, exchange, and derive a shared AES key for secure transmission of healthcare data.
 
-⚙️ Features
+## Features
 
-✅ End-to-end encryption using AES-128-GCM
-✅ Secure key exchange via ECDH (Elliptic Curve Diffie-Hellman)
-✅ Real-time IoT data publishing & subscribing over MQTT
-✅ Lightweight, Python-based implementation
-✅ Compatible with Mosquitto MQTT broker
+- End-to-end encryption over MQTT using AES-GCM
+- Secure ECDH key exchange; Supports session key rotation
+- Benchmarking: latency, throughput, payload & resource metrics
+- Configurable telemetry dataset for reproducible results
+- Python implementation; works with Mosquitto MQTT broker
 
-🧠 Project Structure
-Securing-MQTT-Communications-in-IoT/
-│
-├── aes_handler.py           # Handles AES and ECDH key exchange logic
-├── mqtt_publisher.py        # Publishes encrypted telemetry data
-├── mqtt_subscriber.py       # Subscribes and decrypts incoming messages
-├── aes_key.bin              # Auto-generated AES key (not shared)
-├── README.md                # Project documentation
-└── requirements.txt         # Python dependencies
+## Folder Structure
 
-🧩 Dependencies
+```
+├─ aes_handler.py # AES encryption & ECDH key negotiation
+├─ ecdh_handler.py # Pure ECDH key exchange handler
+├─ mqtt_publisher.py # Publishes encrypted patient telemetry
+├─ mqtt_subscriber.py # Receives, decrypts, and logs messages
+├─ dataset.py # Telemetry dataset management & cleaning
+├─ performance.py # Benchmarking, metrics & plots
+├─ config.yaml # Central project configuration
+├─ requirements.txt # Python dependencies
+├─ yourdataset.csv
+├─ README.md # Project documentation
+```
 
-Install the following Python libraries in your environment:
+## Requirements
 
-pip install paho-mqtt cryptography
+Python packages: `pip install -r requirements.txt`
 
+Also install [Mosquitto MQTT broker](https://mosquitto.org/download/)
 
-You must also have a working Mosquitto MQTT broker installed locally.
+## Quick Start
 
-Download from:
-🔗 https://mosquitto.org/download/
+### 1. Create & Activate Environment (Anaconda Recommended)
 
-🧱 Setting up the Environment
-1️⃣ Create & Activate Virtual Environment
+```
+conda create -n iot_secure_env python=3.9
+conda activate iot_secure_env
+```
 
-If you use Anaconda:
+### 2. Install Dependencies
 
-conda create -n sentiment_env python=3.9
-conda activate sentiment_env
-
-2️⃣ Navigate to Project Directory
-cd C:\Users\<YourUser>\Securing-MQTT-Communications-in-IoT
-
-3️⃣ Install Dependencies
+```
 pip install -r requirements.txt
+```
 
+### 3. Run Mosquitto broker
 
-If you don’t have requirements.txt, simply run:
-
-pip install paho-mqtt cryptography
-
-🚀 Running the Project
-🖥 Step 1: Start Mosquitto Broker
-
-In one terminal:
-
+```
 mosquitto -v
+```
 
+### 4. Load Dataset & Run Subscriber + Publisher (Three terminals)
 
-Keep it running in the background.
-You should see:
+Terminal 1 (Broker):
+`mosquitto -v`
 
-mosquitto version 2.x starting
-Opening ipv4 listen socket on port 1883
+Terminal 2 (Subscriber):
+`python mqtt_subscriber.py`
 
-🖥 Step 2: Run the Subscriber
+Terminal 3 (Publisher):
+`python mqtt_publisher.py yourdataset.csv`
 
-In a second terminal:
+## Benchmarking
 
-conda activate sentiment_env
-cd C:\Users\<YourUser>\Securing-MQTT-Communications-in-IoT
-python mqtt_subscriber.py
+Run enhanced benchmarking and view results:
+`python performance.py`
 
+Metrics evaluated:
 
-You’ll see logs like:
+- Encryption/Decryption Latency (ms)
+- Throughput (messages/sec)
+- Payload Size Overhead (%)
+- CPU/Memory Utilization
+- Security-Performance Tradeoffs
 
-[Subscriber] Connected to broker
-[Subscriber] Waiting for ECDH key exchange...
-[Subscriber] AES key derived successfully!
-[Subscriber] Listening for encrypted messages...
+Visualizations saved as `aes_performance_analysis.png`.
 
-🖥 Step 3: Run the Publisher
+## Dataset Management (`dataset.py`)
 
-In a third terminal:
+- Load healthcare/IoT dataset from config.
+- Filter features, perform sampling.
+- Data cleaning, summary stats and export capability.
+- Add new strategies for outlier removal and synthetic data.
 
-conda activate sentiment_env
-cd C:\Users\<YourUser>\Securing-MQTT-Communications-in-IoT
-python mqtt_publisher.py
+## Troubleshooting
 
-
-You’ll see logs like:
-
-[Publisher] Connected to broker
-[Publisher] ECDH key exchange completed
-[Publisher] Publishing encrypted telemetry data...
-
-🖥 Step 4: Observe Encrypted Data Transmission
-
-The subscriber window will display real-time decrypted messages such as:
-
-[Decrypted] {"patient_id": 101, "heart_rate": 83, "temperature": 36.7, "spo2": 98, "timestamp": "03:43:47"} (Decryption Time: 2.01 ms)
-
-🔐 Encryption Flow Diagram
-Publisher (IoT Device)
-   │
-   ├── Generates ECDH key pair
-   │
-   ├── Sends public key ───────────▶ Subscriber
-   │                               (Receives public key)
-   │
-   ◀────────────── Receives public key
-   │
-   ├── Derives shared AES key (ECDH)
-   │
-   ├── Encrypts telemetry JSON using AES-128-GCM
-   │
-   └── Publishes encrypted message to MQTT topic
-                                   │
-Subscriber                         │
-   ├── Decrypts message with same AES key
-   ├── Validates authentication tag
-   └── Displays decrypted JSON data
-
-🧪 Example Output
-
-Publisher:
-
-[Publisher] ECDH exchange done
-[Publisher] Sent encrypted telemetry: {"heart_rate": 82, "temperature": 36.7, "spo2": 98}
-
-
-Subscriber:
-
-[Decrypted] {"patient_id": 101, "heart_rate": 82, "temperature": 36.7, "spo2": 98, "timestamp": "03:42:02"} (Decryption Time: 2.01 ms)
-
-🧰 Technologies Used
-Component	Technology
-Language	Python 3.9
-Messaging Protocol	MQTT
-Broker	Eclipse Mosquitto
-Encryption	AES-128-GCM
-Key Exchange	Elliptic Curve Diffie-Hellman (ECDH)
-Libraries	paho-mqtt, cryptography
+- Ensure `localhost:1883` is open for MQTT traffic
+- Validate dataset format in `config.yaml`
+- See logs for ECDH and AES errors during handshake
